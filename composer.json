@@ -1,0 +1,15 @@
+{
+  "name": "atrox/flow",
+  "description": "Powerful library for better work with React.PHP promises.",
+  "license": "BSD",
+  "authors": [
+    {"name": "Karel Čížek", "email": "kaja47@k47.cz"}
+  ],
+  "require": {
+    "php": ">=5.5.0",
+    "react/promise": "1.*"
+  },
+  "autoload": {
+      "psr-0": { "Atrox": "src/" }
+    },
+}
