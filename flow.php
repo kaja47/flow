@@ -44,12 +44,16 @@ class Async {
   }
 
 
+}
+
+class Chain {
+
   /**
+   * G[P] => P[(V, P[Next])]
    * @param Closure|Generator
    */
-  // G[P] => P[(V, P[Next])]
   static function promiseChainSeq($f) {
-    $gen = self::getGenerator($f); // generator of promises
+    $gen = Async::getGenerator($f); // generator of promises
 
     $throwExc = function ($ex) use ($gen) { $gen->throw($ex); };
 
@@ -109,7 +113,7 @@ class Async {
   }
 
   static function concurrently($n, $f) {
-    $gen = self::getGenerator($f);
+    $gen = Async::getGenerator($f);
 
     $firstDeferred = $deferred = new Deferred;
 
