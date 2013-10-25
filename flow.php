@@ -44,6 +44,22 @@ class Async {
   }
 
 
+  static function runCallbacks($f) {
+    $gen = self::getGenerator($f);
+
+    $recur = function ($success, $exception) use ($gen, &$recur) {
+      $x = ($exception !== null) ?  $gen->throw($exception) : $gen->send($success);
+      if ($gen->valid()) $x($recur);
+    };
+
+    try {
+      $x = $gen->current();
+      $x($recur);
+    } catch (Exception $e) {
+      $recur(null, $e);
+    }
+  }
+
 }
 
 class Chain {
