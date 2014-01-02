@@ -2,8 +2,8 @@
 
 namespace Atrox;
 
+use React\Promise;
 use React\Promise\PromiseInterface;
-use React\Promise\When;
 use React\Promise\Deferred;
 
 
@@ -32,7 +32,7 @@ class Async {
       try {
         $x = $first ? $gen->current() : $gen->send($pureValue);
       } catch (\Exception $e) {
-        return When::reject($e);
+        return Promise\reject($e);
       }
       $first = false;
       if (!$gen->valid())                 return $pureValue;
@@ -40,7 +40,7 @@ class Async {
       else                                return $recur($x);
     };
 
-    return When::resolve($recur(null));
+    return Promise\resolve($recur(null));
   }
 
 
@@ -78,13 +78,13 @@ class Chain {
       try {
         $x = $first ? $gen->current() : $gen->send($pureValue);
       } catch (\Exception $e) {
-        return When::reject($e);
+        return Promise\reject($e);
       }
       $first = false;
       if (!$gen->valid())
-        return When::resolve([$pureValue, null]);
+        return Promise\resolve([$pureValue, null]);
 
-      return When::resolve($x)->then(
+      return Promise\resolve($x)->then(
         function ($val) use ($recur) { return [$val, $recur($val)]; },
         function ($err) use ($gen)   { $gen->throw($err); }
       );
@@ -117,7 +117,7 @@ class Chain {
     $unwrap = function (array $pair) use (&$unwrap, $unwrapSub, $makeChain) {
       list($subChain, $next) = $pair;
       // ??? empty subchain
-      $subChain = When::resolve($subChain); // needed because `then` acts as both map and flatMap and automatically flattens nested promises
+      $subChain = Promise\resolve($subChain); // needed because `then` acts as both map and flatMap and automatically flattens nested promises
       $subChain->then($unwrapSub);
       if ($next !== null)
         $next->then($unwrap);

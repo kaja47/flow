@@ -7,9 +7,9 @@
   ],
   "require": {
     "php": ">=5.5.0",
-    "react/promise": "1.*"
+    "react/promise": "2.0-dev"
   },
   "autoload": {
-      "psr-0": { "Atrox": "src/" }
-    },
+    "psr-0": { "Atrox": "src/" }
+  },
 }
