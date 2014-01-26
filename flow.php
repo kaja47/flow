@@ -22,6 +22,7 @@ class Async {
     }
   }
 
+
   static function flow($f) {
     $gen = self::getGenerator($f);
 
@@ -60,7 +61,24 @@ class Async {
     }
   }
 
+
+  function concurrently($n, $f) {
+    $gen = self::getGenerator($f);
+
+    $runNext = function () use ($gen, &$runNext) {
+      if ($gen->valid()) {
+        $p = $gen->current();
+        $gen->next();
+        $p->then($runNext, $runNext);
+      }
+    };
+
+    for ($i = 0; $i < $n; $i++) $runNext();
+  }
+
 }
+
+
 
 class Chain {
 
